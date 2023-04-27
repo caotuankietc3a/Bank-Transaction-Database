@@ -6,8 +6,8 @@
 -- use company;
 -- go
 -- select * from employee;
-select * from department;
-select * from employee join department on Dnumber = Dno;
+-- select * from department;
+-- select * from employee join department on Dnumber = Dno;
 -- CREATE TABLE Employee (
 --     Fname VARCHAR(40) DEFAULT 'No Name',
 --     Minit VARCHAR(1),
