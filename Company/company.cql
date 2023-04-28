@@ -1,5 +1,5 @@
 CREATE KEYSPACE Company
-   WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 3};
+   WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
 
 CREATE TABLE IF NOT EXISTS Employee (
     Fname VARCHAR,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Department (
 CREATE TABLE IF NOT EXISTS Dept_locations (
     Dnumber INT,
     Dlocation VARCHAR,
-    PRIMARY KEY(Dnumber, Dlocation),
+    PRIMARY KEY((Dnumber, Dlocation)),
 );
 
 CREATE TABLE IF NOT EXISTS Project (
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS Works_on (
     Essn VARCHAR,
     Pno INT,
     Hours FLOAT,
-    PRIMARY KEY(Essn, Pno)
+    PRIMARY KEY((Essn, Pno))
 );
 
 CREATE TABLE IF NOT EXISTS Dependent (
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS Dependent (
     Sex VARCHAR,
     Bdate DATE,
     Relationship VARCHAR,
-    PRIMARY KEY(Essn, Dependent_name)
+    PRIMARY KEY((Essn, Dependent_name))
 );
 
 
@@ -121,3 +121,18 @@ UPDATE Employee SET Dno = 1 WHERE Ssn = '888665555';
 UPDATE Employee SET Dno = 4 WHERE Ssn = '987987987';
 
 UPDATE Dependent SET Bdate = '1986-04-05' WHERE Essn = '333445555' and Dependent_name = 'Alice';
+
+/* Retrieve the names of all employees whose sex is male in the Department “Research” 
+that makes at least one project more than 10 hours a week. */
+
+SELECT DISTINCT e.fname, e.minit, e.lname 
+FROM Employee as e, Department as d, Project as p, Works_on as w 
+WHERE e.sex = 'M' AND d.dname = 'Research' AND d.dnumber = e.dno AND p.dnum = d.dnumber AND e.ssn = w.essn AND w.hours >= 10;
+
+SELECT Fname, Lname
+FROM Employee
+WHERE Super_ssn = (
+  SELECT Mgr_ssn
+  FROM Department
+  WHERE Dname = 'Research'
+);

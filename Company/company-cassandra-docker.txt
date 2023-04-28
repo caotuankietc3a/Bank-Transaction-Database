@@ -1,0 +1,5 @@
+docker network create cassandra-network
+docker volume create cassandra-data
+docker container run -it -d --name cassandra-container --network cassandra-network -p 9042:9042 -m 4000M -v cassandra-data:/var/lib/cassandra cassandra
+docker exec -it cassandra-container cqlsh
+docker container stop cassandra-container
